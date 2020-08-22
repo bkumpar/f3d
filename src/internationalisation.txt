@@ -1,0 +1,21 @@
+1. add TRANSLATIONS in .pro file, specifying files containing translations (.ts)
+   CODECFORTR = UTF-8
+
+2. lupdate (.pro) to make empty translation files
+
+3. linguist to translate one by one (.ts) file
+
+4. lrelease make .qm files (use File->Release from linguist)
+
+5. modify main.c
+
+// QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
+
+QTranslator translator;
+translator.load("lang/ffdui_hr"); //name of .qm file
+a.installTranslator(&translator);
+
+
+6. copy .qm files in lang directory below executable
+
+7. .qm from resource????

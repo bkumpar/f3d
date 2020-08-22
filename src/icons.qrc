@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="add_folder_">icons/new/add_folder_16x16.png</file>
+        <file alias="search_files_">icons/new/search_files_16x16.png</file>
+        <file alias="edit_folder_">icons/new/edit_folder_16x16.png</file>
+        <file alias="remove_folder_">icons/new/remove_folder_16x16.png</file>
+        <file alias="search_folder_">icons/new/search_folder_16x16.png</file>
+        <file alias="search_recursive_">icons/new/search_folder_recursive_16x16.png</file>
+        <file alias="add_folder">icons/22x22/add_folder_22x22.png</file>
+        <file alias="delete">icons/22x22/delete_22x22.png</file>
+        <file alias="edit_folder">icons/22x22/edit_selection_22x22.png</file>
+        <file alias="remove_folder">icons/22x22/remove_folder_22x22.png</file>
+        <file alias="search_folder">icons/22x22/search_folder_22x22.png</file>
+        <file alias="search_recursive">icons/22x22/search_recursive_22x22.png</file>
+        <file alias="search_files">icons/22x22/start_search_22x22.png</file>
+        <file alias="trash">icons/22x22/trash_22x22.png</file>
+        <file alias="move">icons/22x22/move_22x22.png</file>
+        <file alias="compare">icons/22x22/compare_22x22.png</file>
+        <file alias="main">icons/main_1_48x48.png</file>
+    </qresource>
+</RCC>
