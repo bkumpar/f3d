@@ -3,7 +3,9 @@
 
 FileManager::FileManager(QWidget *parent)
 {
+#ifdef Q_OS_LINUX
     initTrash();
+#endif
 }
 
 void FileManager::moveToTrash(QString fileName)
@@ -68,6 +70,7 @@ void FileManager::remove(QString fileName)
 
 }
 
+#ifdef Q_OS_LINUX
 void FileManager::initTrash()
 {
     QStringList paths;
@@ -99,7 +102,7 @@ void FileManager::initTrash()
         throw std::runtime_error( "Trash doesnt looks like FreeDesktop.org Trash specification" );
 
 }
-
+#endif
 bool FileManager::binaryEqual(QString fileName1, QString fileName2)
 {
     QFile file1(fileName1);

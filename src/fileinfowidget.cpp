@@ -185,6 +185,8 @@ void FileInfoWidget::refresh(QTreeWidgetItem * treeWidgetItem)
 void FileInfoWidget::trashFile(bool confirm)
 {
 
+#ifdef Q_OS_LINUX
+
     QString fileName = this->fileNameText->text();
     bool remove = true;
     if(confirm)
@@ -201,6 +203,12 @@ void FileInfoWidget::trashFile(bool confirm)
         fm.moveToTrash(fileName);
         refresh(m_treeWidgetItem);
     }
+#else
+    QMessageBox::critical(this , tr("Move to trash")
+                               , tr("This functionality is not yet implemented!")
+                               , QMessageBox::Ok );
+
+#endif
 }
 
 void FileInfoWidget::deleteFile(bool confirm)
