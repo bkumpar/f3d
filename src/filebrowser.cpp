@@ -1,7 +1,9 @@
 
 #include <QProcess>
+#include <QFileInfo>
+#include <QDir>
 
-void select(const QString& path){
+void selectInFileBrowser(const QString& path){
 #if defined(Q_OS_WIN)
     const QString explorer = "explorer";
         QStringList param;

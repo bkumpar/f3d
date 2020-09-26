@@ -1,0 +1,18 @@
+First add the following line to the .pro file:
+
+CONFIG -= embed_manifest_exe
+
+this will disable embedding of the default manifest file. After that it is necessary to add a windows resource file:
+
+RC_FILE = f3d.rc
+
+.rc file is usually included to embed version information into .exe, but as soon as manifest is also a part of the executable resources we could reference a custom manifest file in it, just add the following line into app_resources.rc:
+
+
+1 24 f3d.exe.manifest
+
+where 1 is the resource ID,
+24 is the resource type - RT_MANIFEST
+and f3d.exe.manifest is the file with our custom manifest.
+
+If you don't need version info then app_resources.rc may contain just this single line.

@@ -57,6 +57,11 @@ OTHER_FILES += \
 RESOURCES += \
     icons.qrc
 
+win32 {
+CONFIG -= embed_manifest_exe
+RC_FILE = f3d.rc
+}
+
 TRANSLATIONS = ffdui_hr.ts \
                ffdui_en.ts \
                ffdui_de.ts \
@@ -65,4 +70,9 @@ TRANSLATIONS = ffdui_hr.ts \
 DEFINES += DEBUG
 
 CODECFORTR = UTF-8
+
+DISTFILES += \
+    EmbededManifest.txt \
+    f3d.exe.manifest \
+    f3d.rc
 

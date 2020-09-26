@@ -140,7 +140,7 @@ void FileInfoWidget::openContainingDir(QString fileName)
     {
         fileName = fileNameText->text();
     }
-    select(fileName);
+    selectInFileBrowser(fileName);
 
     return;
 }
