@@ -76,7 +76,7 @@ void FileManager::initTrash()
 
 
 
-bool FileManager::moveToTrash(QString fileName)
+void FileManager::moveToTrash(QString fileName)
 {
 
     QFileInfo original( fileName );
