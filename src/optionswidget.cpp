@@ -53,7 +53,7 @@ void OptionsWidget::setUpUI()
     searchPatternCombo->setEnabled(true);
     searchPatternCombo->setInsertPolicy(QComboBox::InsertPolicy::InsertAtBottom);
     searchPatternCombo->setEditable(true);
-//    searchPatternCombo->setEditText(DEFAULT_SEARCH_PATTERN);
+    searchPatternCombo->addItem("*.*");
     searchPatternCombo->addItem("*.jpg");
     searchPatternCombo->addItem("*.bmp");
     searchPatternCombo->addItem("*.png");
@@ -63,6 +63,8 @@ void OptionsWidget::setUpUI()
     searchPatternCombo->addItem("*.avi");
     searchPatternCombo->addItem("*.mp3");
     searchPatternCombo->addItem("*.pdf");
+    searchPatternCombo->addItem("*.log");
+    searchPatternCombo->addItem("*.txt");
 
     minSizeSpinBox = new SpinBoxEx(this);
     minSizeSpinBox->setValue(DEFAULT_MIN_SIZE);

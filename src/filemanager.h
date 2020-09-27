@@ -10,6 +10,13 @@
 #include <QObject>
 #include <stdexcept>
 
+#ifdef Q_OS_WIN32
+
+#include <Windows.h>   // general Windows header file
+#include <ShellAPI.h>  // for shell functions, like SHFileOperation
+#include <string>
+
+#endif
 
 class FileManager : public QObject
 {
@@ -21,7 +28,6 @@ public:
     void moveToTrash(QString fileName);
     void remove(QString fileName);
     bool binaryEqual(QString fileName1, QString fileName2);
-
 
 signals:
     void progressSetupSignal(qint64 fileSize);

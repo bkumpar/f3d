@@ -185,16 +185,14 @@ void FileInfoWidget::refresh(QTreeWidgetItem * treeWidgetItem)
 void FileInfoWidget::trashFile(bool confirm)
 {
 
-#ifdef Q_OS_LINUX
-
     QString fileName = this->fileNameText->text();
     bool remove = true;
     if(confirm)
     {
         QMessageBox::StandardButton button =  QMessageBox::question (this
-                                                                     , tr("Move to trash")
-                                                                     , tr("Move file %1 to trash?").arg(fileName)
-                                                                     , QMessageBox::Yes|QMessageBox::No );
+                                                                 , tr("Move to trash")
+                                                                 , tr("Move file %1 to trash?").arg(fileName)
+                                                                 , QMessageBox::Yes|QMessageBox::No );
         remove = ( button == QMessageBox::Yes  );
     }
     if( remove )
@@ -203,12 +201,6 @@ void FileInfoWidget::trashFile(bool confirm)
         fm.moveToTrash(fileName);
         refresh(m_treeWidgetItem);
     }
-#else
-    QMessageBox::critical(this , tr("Move to trash")
-                               , tr("This functionality is not yet implemented!")
-                               , QMessageBox::Ok );
-
-#endif
 }
 
 void FileInfoWidget::deleteFile(bool confirm)
@@ -218,9 +210,9 @@ void FileInfoWidget::deleteFile(bool confirm)
     if(confirm)
     {
         QMessageBox::StandardButton button =  QMessageBox::question(this
-                                                                    , tr("Delete file")
-                                                                    , tr("Delete file %1?").arg(fileName)
-                                                                    ,QMessageBox::Yes|QMessageBox::No );
+                                                                , tr("Delete file")
+                                                                , tr("Delete file %1?").arg(fileName)
+                                                                ,QMessageBox::Yes|QMessageBox::No );
         remove = (button == QMessageBox::Yes);
     }
     if( remove )
