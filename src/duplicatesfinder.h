@@ -30,7 +30,7 @@ private:
     SizeMap duplicatesMap;
     int _numberOfFiles;
     int _numberOfDuplicates;
-    int _wastedSpace;
+    qint64 _wastedSpace;
     int _strength;
     QString hash(QString fileName,qint64 chunkSize);
 };

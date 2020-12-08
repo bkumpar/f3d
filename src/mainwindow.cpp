@@ -244,7 +244,7 @@ void MainWindow::searchDuplicates()
     int totalFilesCompared = duplicatesFinder->numberOfFiles();
     int totalFilesProcessed = collector->numberOfFiles();
     int numberOfDuplicates = duplicatesFinder->numberOfDuplicates();
-    int wastedSpace = duplicatesFinder->wastedSpace();
+    qint64 wastedSpace = duplicatesFinder->wastedSpace();
 
     QList<QTreeWidgetItem *> items;
     SizeMap & duplicatesMap = duplicatesFinder->duplicates();
