@@ -11,14 +11,13 @@
 #include <QIcon>
 #include <QApplication>
 #include <QList>
-
+#include <QMimeData>
+#include <QDragEnterEvent>
 
 #include "mainwindow.h"
 #include "browsedirectorydialog.h"
 #include "timedisplay.h"
 #include "fileinfowidget.h"
-
-int ROLE_RECURSIVE = Qt::UserRole+1;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -38,55 +37,6 @@ MainWindow::~MainWindow()
     delete fileVisitor;
     delete duplicatesFinder;
     delete collector;
-}
-
-
-void  MainWindow::makeConnections()
-{
-    connect(duplicatesTreeWidget,SIGNAL(itemSelectionChanged()), this, SLOT(showFileInfo()));
-    connect(duplicatesTreeWidget,SIGNAL(openContainingDir(QTreeWidgetItem*)), this, SLOT(openContainingDir(QTreeWidgetItem*)));
-    connect(duplicatesTreeWidget,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(openContainingDir(QTreeWidgetItem*)));
-    connect(duplicatesTreeWidget,SIGNAL(deleteSelected(bool)), fileInfoWidget, SLOT(deleteFile(bool)));
-
-    connect(actionsWidget,SIGNAL(actionAdd()), this, SLOT(showBrowseDirectoryDialog()));
-    connect(actionsWidget,SIGNAL(actionEdit()), this, SLOT(editSelectedDirectory()));
-    connect(actionsWidget,SIGNAL(actionRemove()), this, SLOT(removeSelectedDirectory()));
-    connect(actionsWidget,SIGNAL(actionSearch()), this, SLOT(searchDuplicates()));
-
-    connect(fileVisitor, SIGNAL(start(qint64)), this, SLOT(setupProgressBar(qint64)));
-    connect(fileVisitor, SIGNAL(onFileFound(QFileInfo)), collector, SLOT(add(QFileInfo)));
-
-    connect(fileInfoWidget, SIGNAL(progressSetupSignal(qint64)), this, SLOT(setupProgressBar(qint64)));
-    connect(fileInfoWidget, SIGNAL(progressUpdateSignal(qint64)), this, SLOT(updateProgressBar(qint64)));
-    connect(fileInfoWidget, SIGNAL(progressShowSignal()), this, SLOT(showProgressBar()));
-    connect(fileInfoWidget, SIGNAL(progressHideSignal()), this, SLOT(hideProgressBar()));
-
-}
-
-void MainWindow::setupProgressBar(qint64 value)
-{
-    progressBar->setInvertedAppearance(false);
-    progressBar->setMinimum(0);
-    progressBar->setMaximum(value);
-    progressBar->setValue(0);
-}
-
-
-
-void MainWindow::updateProgressBar(qint64 value, bool indefinite)
-{
-
-    progressBar->setValue(value);
-    if(!indefinite)
-    {
-        return;
-    }
-    if(    progressBar->value() == progressBar->maximum()
-           || progressBar->value() == progressBar->minimum() )
-    {
-        m_progressIncrement = -m_progressIncrement;
-        progressBar->setInvertedAppearance(!progressBar->invertedAppearance());
-    }
 }
 
 void MainWindow::setUpUI()
@@ -112,7 +62,7 @@ void MainWindow::setUpUI()
     topHorLayout = new QHBoxLayout();
     topHorLayout->setObjectName(QString::fromUtf8("topHorLayout"));
 
-    directoryList = new QListWidget(topWidget);
+    directoryList = new DirectoryList(topWidget);
     directoryList->setObjectName(QString::fromUtf8("directoryList"));
 
     actionsWidget =  new ActionsWidget(topWidget)  ;
@@ -151,32 +101,71 @@ void MainWindow::setUpUI()
 
 }
 
+void  MainWindow::makeConnections()
+{
+    connect(duplicatesTreeWidget,SIGNAL(itemSelectionChanged()), this, SLOT(showFileInfo()));
+    connect(duplicatesTreeWidget,SIGNAL(openContainingDir(QTreeWidgetItem*)), this, SLOT(openContainingDir(QTreeWidgetItem*)));
+    connect(duplicatesTreeWidget,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(openContainingDir(QTreeWidgetItem*)));
+    connect(duplicatesTreeWidget,SIGNAL(deleteSelected(bool)), fileInfoWidget, SLOT(deleteFile(bool)));
+
+    connect(actionsWidget,SIGNAL(actionAdd()), this, SLOT(showBrowseDirectoryDialog()));
+    connect(actionsWidget,SIGNAL(actionEdit()), this, SLOT(editSelectedDirectory()));
+    connect(actionsWidget,SIGNAL(actionRemove()), this, SLOT(removeSelectedDirectory()));
+    connect(actionsWidget,SIGNAL(actionSearch()), this, SLOT(searchDuplicates()));
+
+    connect(fileVisitor, SIGNAL(start(qint64)), this, SLOT(setupProgressBar(qint64)));
+    connect(fileVisitor, SIGNAL(onFileFound(QFileInfo)), collector, SLOT(add(QFileInfo)));
+
+    connect(fileInfoWidget, SIGNAL(progressSetupSignal(qint64)), this, SLOT(setupProgressBar(qint64)));
+    connect(fileInfoWidget, SIGNAL(progressUpdateSignal(qint64)), this, SLOT(updateProgressBar(qint64)));
+    connect(fileInfoWidget, SIGNAL(progressShowSignal()), this, SLOT(showProgressBar()));
+    connect(fileInfoWidget, SIGNAL(progressHideSignal()), this, SLOT(hideProgressBar()));
+
+}
+
+void MainWindow::setupProgressBar(qint64 value)
+{
+    progressBar->setInvertedAppearance(false);
+    progressBar->setMinimum(0);
+    progressBar->setMaximum(value);
+    progressBar->setValue(0);
+}
+
+void MainWindow::updateProgressBar(qint64 value, bool indefinite)
+{
+
+    progressBar->setValue(value);
+    if(!indefinite)
+    {
+        return;
+    }
+    if(    progressBar->value() == progressBar->maximum()
+           || progressBar->value() == progressBar->minimum() )
+    {
+        m_progressIncrement = -m_progressIncrement;
+        progressBar->setInvertedAppearance(!progressBar->invertedAppearance());
+    }
+}
+
+void MainWindow::addDirectoryToList(QString directory, bool recursive)
+{
+    directoryList->addDirectory(directory, recursive);
+    lastAddedDirectory = directory;
+}
+
 void MainWindow::showBrowseDirectoryDialog()
 {
     BrowseDirectoryDialog dialog(this);
     dialog.setDirectory(lastAddedDirectory);
     if(dialog.exec()== QDialog::Accepted)
     {
-        QListWidgetItem * item = new QListWidgetItem(directoryList,QListWidgetItem::Type);
-        item->setText(dialog.directory());
-        item->setData(ROLE_RECURSIVE, dialog.recursive());
-
-        if(dialog.recursive())
-            item->setIcon(QIcon(":/icons/search_recursive"));
-        else
-            item->setIcon(QIcon(":/icons/search_folder"));
-        lastAddedDirectory = dialog.directory();
+        addDirectoryToList(dialog.directory(), dialog.recursive());
     }
 }
 
 void MainWindow::removeSelectedDirectory()
 {
-
-    for(int i=0; i<directoryList->count(); i++ ) {
-        QListWidgetItem * item = directoryList->item(i);
-        if( item->isSelected())
-            delete item;
-    }
+    directoryList->removeSelectedDirectory();
 }
 
 void MainWindow::editSelectedDirectory()
@@ -186,15 +175,8 @@ void MainWindow::editSelectedDirectory()
         QListWidgetItem * item = directoryList->selectedItems().first();
         dialog.setDirectory(item->text());
         dialog.setRecursive(item->data(ROLE_RECURSIVE).toBool());
-
         if(dialog.exec()== QDialog::Accepted) {
-            item->setText(dialog.directory());
-            item->setData(ROLE_RECURSIVE, dialog.recursive() );
-
-            if(dialog.recursive())
-                item->setIcon(QIcon(":/icons/search_recursive"));
-            else
-                item->setIcon(QIcon(":/icons/search_folder"));
+            directoryList->setItemData(item, dialog.directory(), dialog.recursive());
         }
     }
 }
@@ -210,7 +192,7 @@ void MainWindow::searchDuplicates()
     fileVisitor->setFilePattern(optionsWidget->pattern());
     fileVisitor->setSizeLimit(optionsWidget->minSize(), optionsWidget->maxSize() );
 
-    showStatus(tr("Building list of candidates ..."));
+    showStatus(tr("Collecting files ..."));
     this->showProgressBar();
     m_progressIncrement = 1;
     QApplication::processEvents();
@@ -252,7 +234,7 @@ void MainWindow::searchDuplicates()
     processed = 0;
     for(SizeMap::iterator sizeMapIterator = duplicatesMap.begin(); sizeMapIterator != duplicatesMap.end(); sizeMapIterator++)
     {
-        QTreeWidgetItem *sizeNode = NULL;
+        QTreeWidgetItem *sizeNode = Q_NULLPTR;
         HashMap & hashMap = sizeMapIterator->second;
         for(HashMap::iterator hashMapIterator = hashMap.begin(); hashMapIterator != hashMap.end(); hashMapIterator++)
         {
@@ -276,7 +258,7 @@ void MainWindow::searchDuplicates()
                 }
             }
         }
-        sizeNode = NULL;
+        sizeNode = Q_NULLPTR;
         this->updateProgressBar(++processed);
     }
     duplicatesTreeWidget->insertTopLevelItems(0, items);
@@ -297,11 +279,6 @@ void MainWindow::showStatus(QString text)
     statusBar->repaint();
 }
 
-//void MainWindow::showFileInfo(QTreeWidgetItem * item)
-//{
-//    fileInfoWidget->showInfo(item);
-//}
-
 void MainWindow::showFileInfo()
 {
     QList<QTreeWidgetItem *> selectedItems = duplicatesTreeWidget->selectedItems();
@@ -319,13 +296,11 @@ void MainWindow::showFileInfo()
     }
 }
 
-
 void MainWindow::openContainingDir(QTreeWidgetItem * item)
 {
     QString fileName =  item->data(0,Qt::DisplayRole).toString();
     fileInfoWidget->openContainingDir(fileName);
 }
-
 
 void MainWindow::progressIndefiniteMove()
 {
@@ -336,7 +311,6 @@ void MainWindow::progressIndefiniteMove()
         progressBar->setInvertedAppearance( progressBar->invertedAppearance());
     }
 }
-
 
 QString  MainWindow::humanReadableFileSize(qint64 valueInBytes)
 {
