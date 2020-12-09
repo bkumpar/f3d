@@ -14,6 +14,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    directorylist.cpp \
     mainwindow.cpp \
     fileinfowidget.cpp \
     browsedirectorydialog.cpp \
@@ -32,6 +33,7 @@ SOURCES += main.cpp\
     filemanager.cpp
 
 HEADERS  += mainwindow.h \
+    directorylist.h \
     fileinfowidget.h \
     browsedirectorydialog.h \
     timedisplay.h \

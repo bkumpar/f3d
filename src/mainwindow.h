@@ -20,7 +20,8 @@
 #include <QRadioButton>
 #include <QProgressBar>
 #include <QStyleOptionProgressBarV2>
-
+#include <QDropEvent>
+#include <QDragEnterEvent>
 #include "duplicatestreeview.h"
 #include "fileinfowidget.h"
 #include "optionswidget.h"
@@ -28,6 +29,7 @@
 #include "duplicatesfinder.h"
 #include "filevisitor.h"
 #include "collector.h"
+#include "directorylist.h"
 
 
 class MainWindow : public QMainWindow
@@ -35,7 +37,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = Q_NULLPTR);
     ~MainWindow();
 
 private:
@@ -47,7 +49,7 @@ private:
     QSplitter   * splitter;
     QStatusBar * statusBar;
     QProgressBar  * progressBar;
-    QListWidget * directoryList;
+    DirectoryList * directoryList;
     DuplicatesTreeWidget * duplicatesTreeWidget;
     FileInfoWidget  * fileInfoWidget;
     OptionsWidget * optionsWidget;
@@ -62,7 +64,6 @@ private:
     void showStatus(QString text);
     QString humanReadableFileSize(qint64 valueInBytes);
 
-
     int m_progressIncrement;
     void progressIndefiniteMove();
     QString lastAddedDirectory;
@@ -76,6 +77,7 @@ private slots:
     //void showFileInfo(QTreeWidgetItem * item);
     void showFileInfo();
     void openContainingDir(QTreeWidgetItem * item);
+    void addDirectoryToList(QString directory, bool recursive);
 
 public slots:
     void updateProgressBar(qint64 count, bool indefinite = false);
