@@ -1,7 +1,7 @@
 #include "filemanager.h"
 #include <iostream>
 
-FileManager::FileManager(QWidget *parent)
+FileManager::FileManager(QWidget *)
 {
 #ifdef Q_OS_LINUX
     initTrash();
