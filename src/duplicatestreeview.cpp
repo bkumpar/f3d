@@ -72,7 +72,7 @@ void DuplicatesTreeWidget::showContextMenu(const QPoint &pos)
     contextMenu.addAction(&action4);
 
     QAction action5("Hide from this list", this);
-    connect(&action3, SIGNAL(triggered()), this, SLOT(emitMoveToTrashSignal()));
+    connect(&action5, SIGNAL(triggered()), this, SLOT(emitHideFromListSignal()));
     contextMenu.addAction(&action5);
 
 
@@ -101,6 +101,12 @@ void DuplicatesTreeWidget::emitMoveToTrashSignal()
 void DuplicatesTreeWidget::emitHideFromListSignal()
 {
     emit hideFromList();
+    QTreeWidgetItem *item = this->selectedItems()[0];
+    delete item;
+    if(item->parent())
+    {
+        removeItemIfEmpty(item->parent());
+    }
 }
 
 void DuplicatesTreeWidget::emitOpenContainingDir()
