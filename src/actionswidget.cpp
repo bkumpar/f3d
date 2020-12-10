@@ -37,3 +37,18 @@ void ActionsWidget::makeConnections()
     connect(startSearchButton, SIGNAL(clicked()), this, SIGNAL(actionSearch()));
 }
 
+void ActionsWidget::disableWidgets()
+{
+    addDirectoryButton->setEnabled(false);
+    editDirectoryButton->setEnabled(false);
+    removeDirectoryButton->setEnabled(false);
+    startSearchButton->setEnabled(false);
+}
+
+void ActionsWidget::enableWidgets()
+{
+    addDirectoryButton->setEnabled(true);
+    editDirectoryButton->setEnabled(true);
+    removeDirectoryButton->setEnabled(true);
+    startSearchButton->setEnabled(true);
+}

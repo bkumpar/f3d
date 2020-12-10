@@ -13,7 +13,8 @@ public:
     explicit ActionsWidget(QWidget *parent = 0);
      ~ActionsWidget();
     enum Action{Add, Remove, Edit, Search};
-
+    void disableWidgets();
+    void enableWidgets();
 signals:
     void actionAdd();
     void actionRemove();

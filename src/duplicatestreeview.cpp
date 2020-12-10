@@ -162,8 +162,3 @@ bool DuplicatesTreeWidget::removeItemIfEmpty(QTreeWidgetItem * item)
     return (isEmpty);
 }
 
-void DuplicatesTreeWidget::refreshTree()
-{
-
-
-}

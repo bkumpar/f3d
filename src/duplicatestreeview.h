@@ -22,7 +22,6 @@ signals:
     void trashSelected(bool);
     void hideFromList();
     void openContainingDir(QTreeWidgetItem * item);
-    void refreshTree();
 
 private slots:
     void showContextMenu(const QPoint &pos);

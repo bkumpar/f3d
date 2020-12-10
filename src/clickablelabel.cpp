@@ -37,7 +37,7 @@ void ClickableLabel::refresh()
     linkStyle();
 }
 
-void ClickableLabel::mousePressEvent ( QMouseEvent * event )
+void ClickableLabel::mousePressEvent ( QMouseEvent * )
 {
     if(m_linked)
         emit clicked();
