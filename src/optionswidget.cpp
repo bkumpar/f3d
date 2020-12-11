@@ -108,15 +108,26 @@ void OptionsWidget::setUpUI()
 }
 void  OptionsWidget::makeConnections()
 {
-//    qDebug(">>OptionsWidget::makeConnections()");
     connect(strengthSlider,SIGNAL(valueChanged(int)), this, SLOT(showStrengthLevel(int)));
-//    qDebug("<<OptionsWidget::makeConnections()");
 }
 
 void OptionsWidget::showStrengthLevel(int level)
 {
-//    qDebug(">>OptionsWidget::showStrengthLevel()");
     strengthLevelLabel->setText(strengthLevel[level]);
-//    qDebug("<<OptionsWidget::showStrengthLevel()");
+}
 
+void OptionsWidget::disableWidgets()
+{
+    minSizeSpinBox->setEnabled(false);
+    maxSizeSpinBox->setEnabled(false);
+    strengthSlider->setEnabled(false);
+    searchPatternCombo->setEnabled(false);
+}
+
+void OptionsWidget::enableWidgets()
+{
+    minSizeSpinBox->setEnabled(true);
+    maxSizeSpinBox->setEnabled(true);
+    strengthSlider->setEnabled(true);
+    searchPatternCombo->setEnabled(true);
 }

@@ -38,6 +38,8 @@ public slots:
     void deleteFile(bool confirm = true);
     void moveFile();
     void updateCompareFilesButton(QList<QTreeWidgetItem *> similarItems);
+    void disableWidgets();
+    void enableWidgets();
 
 signals:
     void progressSetupSignal(qint64 fileSize);

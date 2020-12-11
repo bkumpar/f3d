@@ -274,3 +274,19 @@ void FileInfoWidget::updateCompareFilesButton(QList<QTreeWidgetItem *> similarIt
         compareFilesButton->addItem(fileName);
     }
 }
+
+void FileInfoWidget::disableWidgets()
+{
+    trashFileButton->setEnabled(false);
+    deleteFileButton->setEnabled(false);
+    moveFileButton->setEnabled(false);
+    compareFilesButton->setEnabled(false);
+}
+
+void FileInfoWidget::enableWidgets()
+{
+    trashFileButton->setEnabled(true);
+    deleteFileButton->setEnabled(true);
+    moveFileButton->setEnabled(true);
+    compareFilesButton->setEnabled(true);
+}

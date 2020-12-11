@@ -191,7 +191,7 @@ void MainWindow::searchDuplicates()
     duplicatesFinder->setStrength(optionsWidget->strength());
     fileVisitor->setFilePattern(optionsWidget->pattern());
     fileVisitor->setSizeLimit(optionsWidget->minSize(), optionsWidget->maxSize() );
-
+    this->disableWidgets();
     showStatus(tr("Collecting files ..."));
     this->showProgressBar();
     m_progressIncrement = 1;
@@ -271,6 +271,7 @@ void MainWindow::searchDuplicates()
                .arg(timeDisplay.text())
                .arg(humanReadableFileSize(wastedSpace)));
     this->hideProgressBar();
+    this->enableWidgets();
 }
 
 void MainWindow::showStatus(QString text)
@@ -343,4 +344,18 @@ void MainWindow::showProgressBar()
 void MainWindow::hideProgressBar()
 {
     this->progressBar->setVisible(false);
+}
+
+void MainWindow::disableWidgets()
+{
+    optionsWidget->disableWidgets();
+    fileInfoWidget->disableWidgets();
+    actionsWidget->disableWidgets();
+}
+
+void MainWindow::enableWidgets()
+{
+    optionsWidget->enableWidgets();
+    fileInfoWidget->enableWidgets();
+    actionsWidget->enableWidgets();
 }

@@ -31,6 +31,8 @@ signals:
     
 public slots:
     void showStrengthLevel(int level);
+    void disableWidgets();
+    void enableWidgets();
 
 private:
 

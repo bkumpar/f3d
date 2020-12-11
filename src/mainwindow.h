@@ -68,13 +68,14 @@ private:
     void progressIndefiniteMove();
     QString lastAddedDirectory;
     QString lastMoveDestination;
+    void disableWidgets();
+    void enableWidgets();
 
 private slots:
     void showBrowseDirectoryDialog();
     void removeSelectedDirectory();
     void editSelectedDirectory();
     void searchDuplicates();
-    //void showFileInfo(QTreeWidgetItem * item);
     void showFileInfo();
     void openContainingDir(QTreeWidgetItem * item);
     void addDirectoryToList(QString directory, bool recursive);
