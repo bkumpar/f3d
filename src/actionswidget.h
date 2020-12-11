@@ -10,7 +10,7 @@ class ActionsWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ActionsWidget(QWidget *parent = 0);
+    explicit ActionsWidget(QWidget *parent = Q_NULLPTR);
      ~ActionsWidget();
     enum Action{Add, Remove, Edit, Search};
     void disableWidgets();
