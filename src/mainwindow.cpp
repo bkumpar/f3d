@@ -289,10 +289,12 @@ void MainWindow::showFileInfo()
         if(item->columnCount()>2)
         {
             fileInfoWidget->showInfo(item);
+            duplicatesTreeWidget->enableContextmenu();
         }
         else
         {
             fileInfoWidget->clearData();
+            duplicatesTreeWidget->disableContextmenu();
         }
     }
 }
@@ -356,6 +358,6 @@ void MainWindow::disableWidgets()
 void MainWindow::enableWidgets()
 {
     optionsWidget->enableWidgets();
-    fileInfoWidget->enableWidgets();
+//    fileInfoWidget->enableWidgets();
     actionsWidget->enableWidgets();
 }

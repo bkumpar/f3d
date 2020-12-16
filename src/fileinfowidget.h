@@ -76,7 +76,6 @@ private:
     QTreeWidgetItem * m_treeWidgetItem;
 
     void setUpUI();
-    void showFileInfo();
     void makeConnections();
     void refresh(QTreeWidgetItem * m_treeWidgetItem);
     QString extractPath(QString fileName);

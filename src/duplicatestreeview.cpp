@@ -21,6 +21,28 @@ void DuplicatesTreeWidget::setUpUI()
     QStringList headerLabels = QStringList();
     headerLabels << tr("Size/File name") << tr("Count") << tr("Checksum");
     setHeaderLabels(headerLabels);
+    // create popup menu
+    contextMenu = new QMenu(tr("Context menu"), this);
+    actionDelete = new QAction("Delete", this);
+    connect(actionDelete, SIGNAL(triggered()), this, SLOT(emitDeleteSignal()));
+    contextMenu->addAction(actionDelete);
+
+    actionQuickDelete = new QAction ("Quick Delete", this);
+    connect(actionQuickDelete, SIGNAL(triggered()), this, SLOT(emitQuickDeleteSignal()));
+    contextMenu->addAction(actionQuickDelete);
+
+    actionTrash = new QAction ("Move to trash", this);
+    connect(actionTrash, SIGNAL(triggered()), this, SLOT(emitMoveToTrashSignal()));
+    contextMenu->addAction(actionTrash);
+
+    actionSeparator = new QAction (this);
+    actionSeparator->setSeparator(true);
+    contextMenu->addAction(actionSeparator);
+
+    actionHide = new QAction("Hide from this list", this);
+    connect(actionHide, SIGNAL(triggered()), this, SLOT(emitHideFromListSignal()));
+    contextMenu->addAction(actionHide);
+
 }
 
 void DuplicatesTreeWidget::keyPressEvent(QKeyEvent *event)
@@ -53,30 +75,7 @@ void DuplicatesTreeWidget::keyPressEvent(QKeyEvent *event)
 
 void DuplicatesTreeWidget::showContextMenu(const QPoint &pos)
 {
-    QMenu contextMenu(tr("Context menu"), this);
-
-    QAction action1("Delete", this);
-    connect(&action1, SIGNAL(triggered()), this, SLOT(emitDeleteSignal()));
-    contextMenu.addAction(&action1);
-
-    QAction action2("Quick Delete", this);
-    connect(&action2, SIGNAL(triggered()), this, SLOT(emitQuickDeleteSignal()));
-    contextMenu.addAction(&action2);
-
-    QAction action3("Move to trash", this);
-    connect(&action3, SIGNAL(triggered()), this, SLOT(emitMoveToTrashSignal()));
-    contextMenu.addAction(&action3);
-
-    QAction action4(this);
-    action4.setSeparator(true);
-    contextMenu.addAction(&action4);
-
-    QAction action5("Hide from this list", this);
-    connect(&action5, SIGNAL(triggered()), this, SLOT(emitHideFromListSignal()));
-    contextMenu.addAction(&action5);
-
-
-    contextMenu.exec(mapToGlobal(pos));
+    contextMenu->exec(mapToGlobal(pos));
 }
 
 void DuplicatesTreeWidget::emitDeleteSignal()
@@ -162,3 +161,16 @@ bool DuplicatesTreeWidget::removeItemIfEmpty(QTreeWidgetItem * item)
     return (isEmpty);
 }
 
+void DuplicatesTreeWidget::enableContextmenu()
+{
+    actionTrash->setEnabled(true);
+    actionDelete->setEnabled(true);
+    actionQuickDelete->setEnabled(true);
+}
+
+void DuplicatesTreeWidget::disableContextmenu()
+{
+    actionTrash->setEnabled(false);
+    actionDelete->setEnabled(false);
+    actionQuickDelete->setEnabled(false);
+}

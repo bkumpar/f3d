@@ -16,7 +16,8 @@ public:
     static bool removeIfSingle(QTreeWidgetItem * item);
     static bool removeItemIfEmpty(QTreeWidgetItem * item);
     static QList<QTreeWidgetItem*> similarFiles(QTreeWidgetItem * item);
-
+    void enableContextmenu();
+    void disableContextmenu();
 signals:
     void deleteSelected(bool);
     void trashSelected(bool);
@@ -36,6 +37,12 @@ protected:
 
 private:
     void setUpUI();
+    QMenu * contextMenu;
+    QAction * actionDelete;
+    QAction * actionQuickDelete;
+    QAction * actionTrash;
+    QAction * actionSeparator;
+    QAction * actionHide;
 
 };
 

@@ -44,6 +44,7 @@ void FileInfoWidget::clearData()
     fileSizeText->setText("");
     dateCreatedText->setText("");
     dateModifiedText->setText("");
+    disableWidgets();
 }
 
 void FileInfoWidget::showInfo(QTreeWidgetItem * item)
@@ -58,9 +59,21 @@ void FileInfoWidget::showInfo(QTreeWidgetItem * item)
     m_fileName = fileName;
     QFileInfo fileInfo(fileName);
     bool exists = fileInfo.exists();
+    if(exists)
+    {
+        enableWidgets();
+        QBrush b (Qt::black);
+        item->setForeground( 0 , b );
+    }
+    else
+    {
+        disableWidgets();
+        QBrush b (Qt::gray);
+        item->setForeground( 0 , b );
+    }
     fileNameText->setText(fileName);
     fileNameText->setLinked(exists);
-    fileSizeText->setText(exists ? QString("%1").arg(fileInfo.size()) : QString(""));
+    fileSizeText->setText(exists ? QString("%1 bytes").arg(fileInfo.size()) : QString(""));
     dateCreatedText->setText(exists ? QString("%1").arg(fileInfo.created().toString("dd.MM.yyyy hh:mm:ss.zzz")):QString(""));
     dateModifiedText->setText(exists ? QString("%1").arg(fileInfo.lastModified().toString("dd.MM.yyyy hh:mm:ss.zzz")):QString(""));
     QList<QTreeWidgetItem *> similarItems = DuplicatesTreeWidget::similarFiles(item);
@@ -69,7 +82,6 @@ void FileInfoWidget::showInfo(QTreeWidgetItem * item)
 
 void FileInfoWidget::setUpUI()
 {
-
 
     fileInfoLayout = new QHBoxLayout(this);
     fileActionsLayout = new QVBoxLayout();
@@ -89,9 +101,8 @@ void FileInfoWidget::setUpUI()
     fileActionsLayout->addWidget(moveFileButton);
     fileActionsLayout->addWidget(compareFilesButton);
 
+    QFont labelFont;
     fileNameLabel = new QLabel(tr("File name:"),this);
-    QFont labelFont=fileNameLabel->font();
-    labelFont.setPointSize(labelFont.pointSize()-2);
     fileNameLabel->setFont(labelFont);
     fileNameLabel->setAlignment(Qt::AlignRight);
     gridLayout->addWidget(fileNameLabel,0,0);
@@ -129,8 +140,8 @@ void FileInfoWidget::setUpUI()
     dateModifiedText->setFont(labelFont);
     gridLayout->addWidget(dateModifiedText,3,1);
 
-    gridLayout->setColumnStretch(0,25);
-    gridLayout->setColumnStretch(1,75);
+    gridLayout->setColumnStretch(0,20);
+    gridLayout->setColumnStretch(1,80);
 
 }
 
