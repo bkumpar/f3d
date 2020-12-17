@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 //    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
 
     QTranslator translator;
-    translator.load("lang/f3d_hr");
+    translator.load("translations/f3d_hr");
     a.installTranslator(&translator);
 
     MainWindow w;
