@@ -29,7 +29,7 @@ void DuplicatesFinder::clear()
 }
 
 
-QString DuplicatesFinder::hash(QString fileName,qint64 chunkSize)
+QString DuplicatesFinder::hash(const QString &fileName, qint64 chunkSize)
 {
     QFile file(fileName);
     if( chunkSize == 0)

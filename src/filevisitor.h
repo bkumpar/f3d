@@ -18,14 +18,14 @@ class FileVisitor : public QObject
 {
     Q_OBJECT
 public:
-    explicit FileVisitor(QString filePattern);
+    explicit FileVisitor(const QString &filePattern);
     explicit FileVisitor();
     ~FileVisitor();
 
     void setFilterFlags(QDir::Filters filterFlags);
     void setRecursive(bool recursive);
     void setSizeLimit(int minSize, int maxSize);
-    void setFilePattern(QString filePattern);
+    void setFilePattern(const QString &filePattern);
 
 signals:
     void onFileFound(const QFileInfo & fileInfo);
@@ -34,7 +34,7 @@ signals:
 
 
 public slots:
-    void processPath(QString path, bool recursive);
+    void processPath(const QString &path, bool recursive);
 
 private:
     QStringList m_filePattern;
@@ -45,7 +45,7 @@ private:
 
     void processEntry(QFileInfo & fileInfo, bool recursive);
     void processDir(QDir dir, bool recursive);
-    void countDirs(QFileInfo &fileInfo, bool recursive);
+//    void countDirs(const QFileInfo &fileInfo, bool recursive);
     void fileFound(const QFileInfo & fileInfo);
     void dirFound(const QFileInfo & fileInfo);
 

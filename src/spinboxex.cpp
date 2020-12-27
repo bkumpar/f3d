@@ -24,14 +24,10 @@ SpinBoxEx::SpinBoxEx(QWidget *parent) :
     this->setSuffix(m_sizeUnit[m_unit].suffix);
 
     connect(this,SIGNAL(valueChanged(int)), this,SLOT(valueChanged(int)));
-
 }
 
 SpinBoxEx::~SpinBoxEx()
 {
-//   qDebug(">>SpinBoxEx::~SpinBoxEx");
-
-//   qDebug("<<SpinBoxEx::~SpinBoxEx");
 }
 
 void SpinBoxEx::setFileSize(int value)
@@ -45,28 +41,22 @@ void SpinBoxEx::setFileSize(int value)
             this->setValue(value / m_sizeUnit[m_unit].scale);
             break;
         }
-
     }
-
 }
 
 int SpinBoxEx::fileSize()
 {
     return this->value()*m_factor;
-
 }
-
 
 int SpinBoxEx::unit()
 {
     return m_unit;
 }
 
-
 int SpinBoxEx::factor()
 {
     return m_factor;
-
 }
 
 void SpinBoxEx::valueChanged(int i)
@@ -95,8 +85,6 @@ void SpinBoxEx::valueChanged(int i)
             this->setValue(1023);
         }
     }
-
-
 }
 
 void SpinBoxEx::setUnit(int value)
@@ -107,12 +95,9 @@ void SpinBoxEx::setUnit(int value)
         this->setSuffix(m_sizeUnit[m_unit].suffix);
         m_factor = m_sizeUnit[m_unit].scale;
     }
-
-
 }
 
-QValidator::State SpinBoxEx::validate ( QString & input, int & pos )
+QValidator::State SpinBoxEx::validate ( QString & input, int & pos ) const
 {
-//    qDebug() << input << "  pos=" << pos << endl;
     return QSpinBox::validate (  input, pos );
 }

@@ -11,6 +11,7 @@
 class DuplicatesTreeWidget : public QTreeWidget
 {
     Q_OBJECT
+
 public:
     explicit DuplicatesTreeWidget(QWidget *parent = 0);
     static bool removeIfSingle(QTreeWidgetItem * item);
@@ -18,6 +19,7 @@ public:
     static QList<QTreeWidgetItem*> similarFiles(QTreeWidgetItem * item);
     void enableContextmenu();
     void disableContextmenu();
+
 signals:
     void deleteSelected(bool);
     void trashSelected(bool);
@@ -36,7 +38,8 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private:
-    void setUpUI();
+    void initialize();
+    void makeConnections();
     QMenu * contextMenu;
     QAction * actionDelete;
     QAction * actionQuickDelete;

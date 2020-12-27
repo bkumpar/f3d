@@ -18,6 +18,7 @@ SOURCES += main.cpp\
     mainwindow.cpp \
     fileinfowidget.cpp \
     browsedirectorydialog.cpp \
+    searchthread.cpp \
     timedisplay.cpp \
     optionswidget.cpp \
     spinboxex.cpp \
@@ -36,6 +37,7 @@ HEADERS  += mainwindow.h \
     directorylist.h \
     fileinfowidget.h \
     browsedirectorydialog.h \
+    searchthread.h \
     timedisplay.h \
     optionswidget.h \
     spinboxex.h \

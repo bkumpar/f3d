@@ -27,7 +27,7 @@ FileInfoWidget::FileInfoWidget(QWidget *parent) :
     QWidget(parent)
 {
     m_fileManager = new FileManager();
-    setUpUI();
+    initialize();
     makeConnections();
 
 }
@@ -80,7 +80,7 @@ void FileInfoWidget::showInfo(QTreeWidgetItem * item)
     updateCompareFilesButton(similarItems);
 }
 
-void FileInfoWidget::setUpUI()
+void FileInfoWidget::initialize()
 {
 
     fileInfoLayout = new QHBoxLayout(this);

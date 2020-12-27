@@ -12,13 +12,13 @@
 
 #include "spinboxex.h"
 
-#define DEFAULT_SEARCH_PATTERN "*.pdf"
 #define DEFAULT_MIN_SIZE 100
 #define DEFAULT_MAX_SIZE 1000
 
 class OptionsWidget : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit OptionsWidget(QWidget *parent = 0);
     ~OptionsWidget();
@@ -52,7 +52,7 @@ private:
 
     QString strengthLevel[3];
 
-    void setUpUI();
+    void initialize();
     void makeConnections();
     
 };

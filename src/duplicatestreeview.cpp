@@ -8,13 +8,19 @@
 DuplicatesTreeWidget::DuplicatesTreeWidget(QWidget *parent) :
     QTreeWidget(parent)
 {
-    setUpUI();
+    initialize();
     this->setContextMenuPolicy(Qt::CustomContextMenu);
+    makeConnections();
+}
+
+void DuplicatesTreeWidget::makeConnections()
+{
+
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(showContextMenu(const QPoint &)));
 }
 
-void DuplicatesTreeWidget::setUpUI()
+void DuplicatesTreeWidget::initialize()
 {
     setColumnCount(2);
     setColumnWidth(0,300);
@@ -115,8 +121,6 @@ void DuplicatesTreeWidget::emitOpenContainingDir()
     {
         emit openContainingDir(item);
     }
-
-
 }
 
 QList<QTreeWidgetItem*> DuplicatesTreeWidget::similarFiles(QTreeWidgetItem * item)

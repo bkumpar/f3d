@@ -15,13 +15,13 @@ public:
     enum Action{Add, Remove, Edit, Search};
     void disableWidgets();
     void enableWidgets();
+    void changeSearchButtonRole();
+    void restoreSearchButtonRole();
 signals:
     void actionAdd();
     void actionRemove();
     void actionEdit();
     void actionSearch();
-
-public slots:
 
 private:
     QPushButton * addDirectoryButton;
@@ -29,7 +29,7 @@ private:
     QPushButton * removeDirectoryButton;
     QPushButton * startSearchButton;
     QVBoxLayout * buttonsLayout;
-    void setUpUI();
+    void initialize();
     void makeConnections();
     
 };

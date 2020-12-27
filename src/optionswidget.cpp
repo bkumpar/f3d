@@ -6,14 +6,8 @@ OptionsWidget::OptionsWidget(QWidget *parent) :
     strengthLevel[0] = tr("Low") ;
     strengthLevel[1] = tr("Optimal") ;
     strengthLevel[2]=  tr("Strong but slow") ;
-    setUpUI();
+    initialize();
     makeConnections();
-    strengthSlider->setValue(1);
-
-    #ifdef DEBUG
-    this->minSizeSpinBox->setValue(100);
-    this->maxSizeSpinBox->setValue(1000);;
-    #endif
 }
 
 OptionsWidget::~OptionsWidget()
@@ -38,7 +32,7 @@ int OptionsWidget::strength()
     return strengthSlider->value();
 }
 
-void OptionsWidget::setUpUI()
+void OptionsWidget::initialize()
 {
     searchPatternLabel =  new QLabel(tr("Search pattern:"), this);
     searchPatternLabel->setAlignment(Qt::AlignRight);
@@ -76,6 +70,7 @@ void OptionsWidget::setUpUI()
     strengthSlider->setPageStep( 1 );
     strengthSlider->setSingleStep( 1 );
     strengthSlider->setRange ( 0, 2);
+    strengthSlider->setValue(1);
 
     strengthSlider->setTickPosition(QSlider::TicksBelow);
     strengthSlider->setMinimumWidth(128) ;

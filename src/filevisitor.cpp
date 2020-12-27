@@ -9,7 +9,7 @@
 #include "filevisitor.h"
 #include <QDebug>
 
-FileVisitor::FileVisitor(QString filePattern)
+FileVisitor::FileVisitor(const QString &filePattern)
     : m_sortFlags(QDir::NoSort),  m_filterFlags(QDir::NoSymLinks)
 {
     m_filePattern = QStringList(filePattern) ;
@@ -25,7 +25,7 @@ FileVisitor::~FileVisitor()
 
 }
 
-void FileVisitor::setFilePattern(QString filePattern)
+void FileVisitor::setFilePattern(const QString &filePattern)
 {
     m_filePattern = QStringList(filePattern);
 }
@@ -45,7 +45,7 @@ void FileVisitor::setSizeLimit(int minSize, int maxSize)
     }
 }
 
-void FileVisitor::processPath(QString path, bool recursive)
+void FileVisitor::processPath(const QString &path, bool recursive)
 {
     QFileInfo fileInfo(path);
     emit start(0);

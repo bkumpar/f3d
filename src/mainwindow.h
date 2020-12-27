@@ -30,7 +30,7 @@
 #include "filevisitor.h"
 #include "collector.h"
 #include "directorylist.h"
-
+#include "searchthread.h"
 
 class MainWindow : public QMainWindow
 {
@@ -54,34 +54,32 @@ private:
     FileInfoWidget  * fileInfoWidget;
     OptionsWidget * optionsWidget;
     ActionsWidget * actionsWidget;
-
-    DuplicatesFinder * duplicatesFinder;
-    FileVisitor * fileVisitor;
-    Collector * collector;
-
-    void setUpUI();
+    SearchThread * searchThread;
+    void initialize();
     void makeConnections();
-    void showStatus(QString text);
     QString humanReadableFileSize(qint64 valueInBytes);
+    void disableWidgets();
+    void enableWidgets();
 
     int m_progressIncrement;
     void progressIndefiniteMove();
     QString lastAddedDirectory;
     QString lastMoveDestination;
-    void disableWidgets();
-    void enableWidgets();
 
 private slots:
     void showBrowseDirectoryDialog();
     void removeSelectedDirectory();
     void editSelectedDirectory();
-    void searchDuplicates();
+    void searchDuplicatesInThread();
     void showFileInfo();
     void openContainingDir(QTreeWidgetItem * item);
-    void addDirectoryToList(QString directory, bool recursive);
+    void addDirectoryToList(const QString & directory, bool recursive);
+    void showStatus(const QString &text);
+    void searchFinished();
+    void searchStarted();
 
 public slots:
-    void updateProgressBar(qint64 count, bool indefinite = false);
+    void updateProgressBar(qint64 count);
     void setupProgressBar(qint64 value);
     void showProgressBar();
     void hideProgressBar();

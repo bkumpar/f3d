@@ -16,7 +16,7 @@ FileManager::FileManager(QWidget *)
 
 #ifdef Q_OS_WIN32
 
-void FileManager::moveToTrash(QString fileName )
+void FileManager::moveToTrash(const QString &fileName )
 {
     std::wstring sFileName = fileName.toStdWString();
     sFileName.append(1, L'\0');        // fileName string must be double nul-terminated
@@ -76,7 +76,7 @@ void FileManager::initTrash()
 
 
 
-void FileManager::moveToTrash(QString fileName)
+void FileManager::moveToTrash(const QString &fileName)
 {
 
     QFileInfo original( fileName );
@@ -128,7 +128,7 @@ void FileManager::moveToTrash(QString fileName)
 
 }
 #endif
-void FileManager::remove(QString fileName)
+void FileManager::remove(const QString &fileName)
 {
     QFileInfo original( fileName );
     if( !original.exists() )
@@ -138,7 +138,7 @@ void FileManager::remove(QString fileName)
 
 }
 
-bool FileManager::binaryEqual(QString fileName1, QString fileName2)
+bool FileManager::binaryEqual(const QString &fileName1, const QString &fileName2)
 {
     QFile file1(fileName1);
     QFile file2(fileName2);

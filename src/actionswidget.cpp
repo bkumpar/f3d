@@ -3,7 +3,7 @@
 ActionsWidget::ActionsWidget(QWidget *parent) :
     QWidget(parent)
 {
-    setUpUI();
+    initialize();
     makeConnections();
 }
 
@@ -12,7 +12,20 @@ ActionsWidget::~ActionsWidget()
 
 }
 
-void ActionsWidget::setUpUI()
+void ActionsWidget::changeSearchButtonRole()
+{
+    startSearchButton->setText(tr("Stop"));
+    startSearchButton->setIcon(QIcon(":/icons/delete"));
+    startSearchButton->setEnabled(true);
+}
+
+void ActionsWidget::restoreSearchButtonRole()
+{
+    startSearchButton->setText(tr("Search"));
+    startSearchButton->setIcon(QIcon(":/icons/search_files"));
+}
+
+void ActionsWidget::initialize()
 {
     addDirectoryButton = new QPushButton(QIcon(":/icons/add_folder"),tr("Add"),this);
     editDirectoryButton = new QPushButton(QIcon(":/icons/edit_folder"),tr("Edit"),this);

@@ -16,15 +16,12 @@
 class BrowseDirectoryDialog : public QFileDialog
 {
     Q_OBJECT
+
 public:
     BrowseDirectoryDialog(QWidget * parent );
     bool recursive();
     void setRecursive(bool value);
     QString directory();
-
-signals:
-    
-public slots:
 
 private:
         void customize();

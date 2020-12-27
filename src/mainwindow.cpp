@@ -19,27 +19,22 @@
 #include "timedisplay.h"
 #include "fileinfowidget.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    fileVisitor = new FileVisitor();
-    duplicatesFinder = new DuplicatesFinder();
-    collector = new Collector();
     lastAddedDirectory = QDir::homePath();
     lastMoveDestination = QDir::homePath();
 
-    setUpUI();
+    initialize();
     makeConnections();
 }
 
 MainWindow::~MainWindow()
 {
-    delete fileVisitor;
-    delete duplicatesFinder;
-    delete collector;
 }
 
-void MainWindow::setUpUI()
+void MainWindow::initialize()
 {
 
     this->setWindowIcon(QIcon(":/icons/main"));
@@ -99,6 +94,9 @@ void MainWindow::setUpUI()
     this->setStatusBar(statusBar);
     this->setCentralWidget(splitter);
 
+    searchThread = new SearchThread();
+    searchThread->setObjectName(tr("f3dSearchTread"));
+
 }
 
 void  MainWindow::makeConnections()
@@ -111,16 +109,16 @@ void  MainWindow::makeConnections()
     connect(actionsWidget,SIGNAL(actionAdd()), this, SLOT(showBrowseDirectoryDialog()));
     connect(actionsWidget,SIGNAL(actionEdit()), this, SLOT(editSelectedDirectory()));
     connect(actionsWidget,SIGNAL(actionRemove()), this, SLOT(removeSelectedDirectory()));
-    connect(actionsWidget,SIGNAL(actionSearch()), this, SLOT(searchDuplicates()));
-
-    connect(fileVisitor, SIGNAL(start(qint64)), this, SLOT(setupProgressBar(qint64)));
-    connect(fileVisitor, SIGNAL(onFileFound(QFileInfo)), collector, SLOT(add(QFileInfo)));
+    connect(actionsWidget,SIGNAL(actionSearch()), this, SLOT(searchDuplicatesInThread()));
 
     connect(fileInfoWidget, SIGNAL(progressSetupSignal(qint64)), this, SLOT(setupProgressBar(qint64)));
     connect(fileInfoWidget, SIGNAL(progressUpdateSignal(qint64)), this, SLOT(updateProgressBar(qint64)));
-    connect(fileInfoWidget, SIGNAL(progressShowSignal()), this, SLOT(showProgressBar()));
-    connect(fileInfoWidget, SIGNAL(progressHideSignal()), this, SLOT(hideProgressBar()));
 
+    connect(searchThread, SIGNAL(showStatus(QString)), this, SLOT(showStatus(QString)));
+    connect(searchThread, SIGNAL(setupProgressBar(qint64)), this, SLOT(setupProgressBar(qint64)));
+    connect(searchThread, SIGNAL(updateProgressBar(qint64)), this, SLOT(updateProgressBar(qint64)));
+    connect(searchThread, SIGNAL(finished()), this, SLOT(searchFinished()));
+    connect(searchThread, SIGNAL(started()), this, SLOT(searchStarted()));
 }
 
 void MainWindow::setupProgressBar(qint64 value)
@@ -131,9 +129,9 @@ void MainWindow::setupProgressBar(qint64 value)
     progressBar->setValue(0);
 }
 
-void MainWindow::updateProgressBar(qint64 value, bool indefinite)
+void MainWindow::updateProgressBar(qint64 value)
 {
-
+    bool indefinite = false;
     progressBar->setValue(value);
     if(!indefinite)
     {
@@ -147,7 +145,7 @@ void MainWindow::updateProgressBar(qint64 value, bool indefinite)
     }
 }
 
-void MainWindow::addDirectoryToList(QString directory, bool recursive)
+void MainWindow::addDirectoryToList(const QString & directory, bool recursive)
 {
     directoryList->addDirectory(directory, recursive);
     lastAddedDirectory = directory;
@@ -181,100 +179,24 @@ void MainWindow::editSelectedDirectory()
     }
 }
 
-void MainWindow::searchDuplicates()
+void MainWindow::searchDuplicatesInThread()
 {
-    TimeDisplay timeDisplay;
-    timeDisplay.start();
-    collector->clear();
-    duplicatesTreeWidget->clear();
-    duplicatesFinder->clear();
-    duplicatesFinder->setStrength(optionsWidget->strength());
-    fileVisitor->setFilePattern(optionsWidget->pattern());
-    fileVisitor->setSizeLimit(optionsWidget->minSize(), optionsWidget->maxSize() );
-    this->disableWidgets();
-    showStatus(tr("Collecting files ..."));
-    this->showProgressBar();
-    m_progressIncrement = 1;
-    QApplication::processEvents();
-    for(int row=0; row< directoryList->count(); row++  )
+    if(searchThread->isRunning())
     {
-        QListWidgetItem * listItem = (QListWidgetItem *) directoryList->item(row);
-        QString path = listItem->text();
-        bool recursive = listItem->data(ROLE_RECURSIVE).toBool();
-        fileVisitor->processPath(path,recursive);
+        searchThread->requestInterruption();
+        showStatus("Stopping...");
     }
-
-    Candidates & candidates = collector->candidates();
-    duplicatesFinder->clear();
-    showStatus(tr("Searching for duplicates ..."));
-    this->setupProgressBar(candidates.size() );
-    int processed = 0;
-    for( Candidates::iterator it = candidates.begin(); it != candidates.end(); it++)
+    else
     {
-        qint64 fileSize = it->first;
-        SameSizeFilesSet & files = it->second;
-        if(files.size() > 1)
-        {
-            for(SameSizeFilesSet::iterator it2 = files.begin(); it2 != files.end(); it2++ )
-            {
-                duplicatesFinder->add(fileSize, *it2);
-            }
-        }
-        this->updateProgressBar(++processed);
+        searchThread->setStrength(optionsWidget->strength());
+        searchThread->setSizeLimit(optionsWidget->minSize(), optionsWidget->maxSize());
+        searchThread->setFilePattern(optionsWidget->pattern());
+        searchThread->setTreeWidget(this->duplicatesTreeWidget);
+        searchThread->setDirectoryList(this->directoryList);
+        searchThread->start();
     }
-    timeDisplay.read();
-    int totalFilesCompared = duplicatesFinder->numberOfFiles();
-    int totalFilesProcessed = collector->numberOfFiles();
-    int numberOfDuplicates = duplicatesFinder->numberOfDuplicates();
-    qint64 wastedSpace = duplicatesFinder->wastedSpace();
-
-    QList<QTreeWidgetItem *> items;
-    SizeMap & duplicatesMap = duplicatesFinder->duplicates();
-    this->setupProgressBar(duplicatesMap.size() );
-    processed = 0;
-    for(SizeMap::iterator sizeMapIterator = duplicatesMap.begin(); sizeMapIterator != duplicatesMap.end(); sizeMapIterator++)
-    {
-        QTreeWidgetItem *sizeNode = Q_NULLPTR;
-        HashMap & hashMap = sizeMapIterator->second;
-        for(HashMap::iterator hashMapIterator = hashMap.begin(); hashMapIterator != hashMap.end(); hashMapIterator++)
-        {
-            QString hash = hashMapIterator->first;
-            NameSet & nameSet = hashMapIterator->second;
-            if(nameSet.size()>1)
-            {
-                if(!sizeNode)
-                {
-                    QStringList sl1;
-                    qint64 fileSize = sizeMapIterator->first;
-                    sl1 << QString("%1").arg(fileSize) << QString("%1").arg(nameSet.size());
-                    sizeNode = new QTreeWidgetItem(duplicatesTreeWidget, sl1,QTreeWidgetItem::Type);
-                }
-                for(NameSet::iterator nameSetIterator = nameSet.begin(); nameSetIterator != nameSet.end(); nameSetIterator++)
-                {
-                    QString fileName = *nameSetIterator;
-                    QStringList sl2;
-                    sl2 <<  fileName << "" << hash ;
-                    items.append(new QTreeWidgetItem(sizeNode, sl2,QTreeWidgetItem::Type));
-                }
-            }
-        }
-        sizeNode = Q_NULLPTR;
-        this->updateProgressBar(++processed);
-    }
-    duplicatesTreeWidget->insertTopLevelItems(0, items);
-    timeDisplay.read();
-
-    showStatus(tr("Done! %1 files processed, %2 files compared,  %3 duplicates found in %4. %5 wasted space.")
-               .arg(totalFilesProcessed)
-               .arg(totalFilesCompared)
-               .arg(numberOfDuplicates)
-               .arg(timeDisplay.text())
-               .arg(humanReadableFileSize(wastedSpace)));
-    this->hideProgressBar();
-    this->enableWidgets();
 }
-
-void MainWindow::showStatus(QString text)
+void MainWindow::showStatus(const QString &text)
 {
     statusBar->showMessage(text);
     statusBar->repaint();
@@ -358,6 +280,20 @@ void MainWindow::disableWidgets()
 void MainWindow::enableWidgets()
 {
     optionsWidget->enableWidgets();
-//    fileInfoWidget->enableWidgets();
     actionsWidget->enableWidgets();
+}
+
+void MainWindow::searchFinished()
+{
+    this->hideProgressBar();
+    this->actionsWidget->restoreSearchButtonRole();
+    this->enableWidgets();
+}
+
+void MainWindow::searchStarted()
+{
+    this->disableWidgets();
+    this->actionsWidget->changeSearchButtonRole();
+    showStatus(tr("Collecting files ..."));
+    this->showProgressBar();
 }

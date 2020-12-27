@@ -8,6 +8,7 @@
 
 class DirectoryList : public QListWidget
 {
+
 public:
     DirectoryList(QWidget * parent);
     void dropEvent(QDropEvent* event) ;

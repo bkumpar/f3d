@@ -21,7 +21,7 @@ PopUpButton::~PopUpButton()
     delete this->menu;
 }
 
-void PopUpButton::addItem(QString item)
+void PopUpButton::addItem(const QString &item)
 {
     QAction * a = this->menu->addAction(item);
     a->setData(item);

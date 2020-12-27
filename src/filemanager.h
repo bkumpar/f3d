@@ -25,9 +25,9 @@ class FileManager : public QObject
 public:
     FileManager(QWidget *parent = 0);
 
-    void moveToTrash(QString fileName);
-    void remove(QString fileName);
-    bool binaryEqual(QString fileName1, QString fileName2);
+    void moveToTrash(const QString &fileName);
+    void remove(const QString &fileName);
+    bool binaryEqual(const QString &fileName1, const QString &fileName2);
 
 signals:
     void progressSetupSignal(qint64 fileSize);

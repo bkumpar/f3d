@@ -13,6 +13,7 @@ typedef std::map<qint64, HashMap> SizeMap;
 class DuplicatesFinder : public QObject
 {
     Q_OBJECT
+
 public:
     DuplicatesFinder();
     ~DuplicatesFinder();
@@ -32,7 +33,7 @@ private:
     int _numberOfDuplicates;
     qint64 _wastedSpace;
     int _strength;
-    QString hash(QString fileName,qint64 chunkSize);
+    QString hash(const QString &fileName, qint64 chunkSize);
 };
 
 #endif // DUPLICATESFINDER_H

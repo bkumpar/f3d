@@ -15,7 +15,6 @@ class SpinBoxEx : public QSpinBox
 {
     Q_OBJECT
 
-
 public:
 
     enum Unit {
@@ -40,7 +39,7 @@ public slots:
     void valueChanged(int i);
 
 protected:
-    QValidator::State validate ( QString & input, int & pos );
+    QValidator::State validate ( QString & input, int & pos ) const;
 
 private:
 

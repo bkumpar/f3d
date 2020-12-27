@@ -14,14 +14,15 @@ typedef std::map<qint64, SameSizeFilesSet> Candidates;
 class Collector : public QObject
 {
     Q_OBJECT
+
 public:
     explicit Collector();
     Candidates & candidates();
     int numberOfFiles();
-signals:
 
 public slots:
-    void add(QFileInfo fileInfo);
+    void add(const QFileInfo &fileInfo);
+    void add(qint64 fileSize, QString fileName);
     void clear();
 
 private:

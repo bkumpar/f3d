@@ -22,7 +22,7 @@ int Collector::numberOfFiles()
 
 }
 
-void Collector::add(QFileInfo fileInfo)
+void Collector::add(const QFileInfo & fileInfo)
 {
     qint64 fileSize = fileInfo.size();
     Candidates::iterator candidatesIterator = _candidatesMap.find(fileSize);
@@ -35,6 +35,22 @@ void Collector::add(QFileInfo fileInfo)
     }
     SameSizeFilesSet & nameSet = candidatesIterator->second;
     QString fileName = fileInfo.absoluteFilePath();
+
+    nameSet.insert(fileName);
+    _numberOfFiles++;
+}
+
+void Collector::add(qint64 fileSize, QString fileName)
+{
+    Candidates::iterator candidatesIterator = _candidatesMap.find(fileSize);
+    if(candidatesIterator == _candidatesMap.end())
+    {
+        std::pair<Candidates::iterator, bool> ptr;
+        SameSizeFilesSet emptySameSizeSet;
+        ptr = _candidatesMap.insert(std::pair<long, SameSizeFilesSet>(fileSize, emptySameSizeSet));
+        candidatesIterator = ptr.first;
+    }
+    SameSizeFilesSet & nameSet = candidatesIterator->second;
 
     nameSet.insert(fileName);
     _numberOfFiles++;
